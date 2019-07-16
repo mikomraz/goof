@@ -4,7 +4,7 @@ orbs:
   snyk-scan: snyk/snyk@dev:master
 
 jobs:
-  build:
+  build_app:
     working_directory: ~/my-app
     docker:
       - image: circleci/node:4.8.2
@@ -20,7 +20,7 @@ jobs:
           # token: "$SNYK_TOKEN"
           # organization: "$SNYK_ORGANIZATION"
           # project: "$SNYK_PROJECT"
-  build2:
+  build_img:
     working_directory: ~/my-app
     environment:
       IMAGE_NAME: goof-image
@@ -40,3 +40,9 @@ jobs:
           # token: "$SNYK_TOKEN"
           # organization: "$SNYK_ORGANIZATION"
           # project: "$SNYK_PROJECT"
+workflows:
+  version: 2
+  build_app_and_img:
+    jobs:
+      - build_app
+      - build_img
