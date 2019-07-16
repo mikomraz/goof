@@ -38,6 +38,7 @@ jobs:
           failOnIssues: false
           monitorOnBuild: true
           targetFile: "Dockerfile"
+          dockerImageName: $IMAGE_NAME:latest
           # token: "$SNYK_TOKEN"
           # organization: "$SNYK_ORGANIZATION"
           # project: "$SNYK_PROJECT"
