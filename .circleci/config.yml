@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  snyk-scan: mikomraz/snyk-scan@dev:master
+  snyk-scan: snyk/snyk@dev:master
 
 jobs:
   build:
@@ -14,9 +14,29 @@ jobs:
           command: npm install -q
       - snyk-scan/scan:
           severity: high
-          failOnIssues: true
+          failOnIssues: false
           monitorOnBuild: true
           targetFile: "package.json"
+          # token: "$SNYK_TOKEN"
+          # organization: "$SNYK_ORGANIZATION"
+          # project: "$SNYK_PROJECT"
+  build2:
+    working_directory: ~/my-app
+    environment:
+      IMAGE_NAME: goof-image
+    docker:
+        - image: circleci/buildpack-deps:stretch
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build Docker image
+          command: docker build -t $IMAGE_NAME:latest .
+      - snyk-scan/scan:
+          severity: high
+          failOnIssues: false
+          monitorOnBuild: true
+          targetFile: "Dockerfile"
           # token: "$SNYK_TOKEN"
           # organization: "$SNYK_ORGANIZATION"
           # project: "$SNYK_PROJECT"
