@@ -20,6 +20,7 @@ jobs:
           # token: "$SNYK_TOKEN"
           # organization: "$SNYK_ORGANIZATION"
           # project: "$SNYK_PROJECT"
+
   build_img:
     working_directory: ~/my-app
     environment:
