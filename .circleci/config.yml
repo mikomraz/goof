@@ -14,6 +14,7 @@ jobs:
           command: npm install -q
       - snyk-scan/scan:
           severity: high
+          protect: true
           failOnIssues: false
           monitorOnBuild: true
           targetFile: "package.json"
