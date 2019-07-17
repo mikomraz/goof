@@ -1,0 +1,103 @@
+version: 2.1
+
+orbs:
+  snyk: snyk/snyk@dev:add-alpine-cli
+
+jobs:
+  build_app11:
+    docker:
+      # - image: circleci/node:4.8.2
+      - image: node:10-alpine
+    steps:
+      - checkout
+      - run: npm install -q
+      - snyk/scan:
+          os: alpine
+
+  build_app12:
+    docker:
+      - image: node:10-alpine
+    steps:
+      - checkout
+      - run: npm install -q
+      - snyk/scan:
+          os: alpine
+          install-alpine-dependencies: true
+
+  build_app13:
+    docker:
+      - image: node:10-alpine
+    steps:
+      - checkout
+      - run: npm install -q
+      - snyk/scan:
+          os: alpine
+          install-alpine-dependencies: false
+
+  build_app14:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run: npm install -q
+      - snyk/scan:
+          install-alpine-dependencies: true
+
+  build_app15:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run: npm install -q
+      - snyk/scan:
+          install-alpine-dependencies: false
+
+  build_app2:
+    working_directory: ~/my-app
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run: npm install -q
+      - snyk/scan:
+          token-variable: SNYK_TOKEN
+          organization: ${SNYK_ORGANIZATION}
+          severity-threshold: high
+          protect: false
+          fail-on-issues: false
+          monitor-on-build: true
+          project: ${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}-app
+
+  # build_img:
+  #   working_directory: ~/my-app
+  #   environment:
+  #     IMAGE_NAME: goof-image
+  #   docker:
+  #       - image: circleci/buildpack-deps:stretch
+  #   steps:
+  #     - checkout
+  #     - setup_remote_docker
+  #     - run:
+  #         name: Build Docker image
+  #         command: docker build -t $IMAGE_NAME:latest .
+  #     - snyk/scan:
+  #         severity-threshold: high
+  #         fail-on-issues: false
+  #         monitor-on-build: true
+  #         token-variable: SNYK_TOKEN
+  #         organization: ${SNYK_ORGANIZATION}
+  #         docker-image-name: $IMAGE_NAME:latest
+  #         target-file: "Dockerfile"
+  #         project: ${CIRCLE_PROJECT_REPONAME}/${CIRCLE_BRANCH}-docker
+
+workflows:
+  version: 2
+  build_app_and_img:
+    jobs:
+      - build_app11
+      - build_app12
+      - build_app13
+      - build_app14
+      - build_app15
+      - build_app2
+      # - build_img
